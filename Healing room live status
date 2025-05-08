@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Timer Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px;
+        }
+        .timer-section, .appointment-section {
+            margin: 20px;
+            padding: 20px;
+            width: 80%;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+        }
+        .timer-section h2, .appointment-section h2 {
+            text-align: center;
+            color: #555;
+        }
+        .room-timer {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #fafafa;
+            border-radius: 5px;
+            box-shadow: 0px 2px 4px rgba(0,0,0,0.1);
+        }
+        .timer-btns button {
+            padding: 5px 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .timer-btns button:hover {
+            background-color: #45a049;
+        }
+        .appointment-list {
+            list-style: none;
+            padding-left: 0;
+        }
+        .appointment-item {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            box-shadow: 0px 2px 4px rgba(0,0,0,0.1);
+        }
+        .timer {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="timer-section">
+        <h2>Healing Room Timers</h2>
+        <div id="room-102" class="room-timer">
+            <span>Healing Room 102</span>
+            <span id="time-102" class="timer">00:00</span>
+            <div class="timer-btns">
+                <button onclick="startTimer(102)">Start</button>
+                <button onclick="resetTimer(102)">Reset</button>
+            </div>
+        </div>
+        <div id="room-103" class="room-timer">
+            <span>Healing Room 103</span>
+            <span id="time-103" class="timer">00:00</span>
+            <div class="timer-btns">
+                <button onclick="startTimer(103)">Start</button>
+                <button onclick="resetTimer(103)">Reset</button>
+            </div>
+        </div>
+        <div id="room-104" class="room-timer">
+            <span>Healing Room 104</span>
+            <span id="time-104" class="timer">00:00</span>
+            <div class="timer-btns">
+                <button onclick="startTimer(104)">Start</button>
+                <button onclick="resetTimer(104)">Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="appointment-section">
+        <h2>Today's Appointments</h2>
+        <ul class="appointment-list" id="appointment-list">
+            <li class="appointment-item">
+                <span>2:30 PM - John D. - Healing</span>
+            </li>
+            <li class="appointment-item">
+                <span>3:15 PM - Jane S. - Massage</span>
+            </li>
+        </ul>
+    </div>
+
+    <script>
+        let timers = {
+            102: 0,
+            103: 0,
+            104: 0
+        };
+
+        let timerIntervals = {};
+
+        function startTimer(room) {
+            if (timerIntervals[room]) return; // Prevent multiple intervals for the same room
+
+            timerIntervals[room] = setInterval(function() {
+                timers[room]++;
+                const minutes = Math.floor(timers[room] / 60);
+                const seconds = timers[room] % 60;
+                document.getElementById(`time-${room}`).innerText = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+                // Chime effect when 30 minutes before the session ends
+                if (timers[room] === 1800) {
+                    playChime();
+                }
+                // Chime effect 5 minutes before the session ends
+                if (timers[room] === 1950) {
+                    playChime();
+                }
+            }, 1000);
+        }
+
+        function resetTimer(room) {
+            clearInterval(timerIntervals[room]);
+            timers[room] = 0;
+            document.getElementById(`time-${room}`).innerText = '00:00';
+        }
+
+        function playChime() {
+            const chime = new Audio('https://www.orangefreesounds.com/wp-content/uploads/2023/06/Chime-sound-effect.mp3');
+            chime.play();
+        }
+    </script>
+</body>
+</html>
